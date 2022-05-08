@@ -7,7 +7,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using ASM.Data;
-using Demo6.Models;
+using ASM.Models;
 using Microsoft.AspNetCore.Identity;
 using ASM.Areas.Identity.Data;
 using Microsoft.AspNetCore.Authorization;
@@ -18,22 +18,130 @@ namespace ASM.Controllers
     {
         private readonly UserContext _context;
         private readonly UserManager<AppUser> _userManager;
+        private readonly int _recordsPerPage = 20;
 
         public BooksController(UserContext context, UserManager<AppUser> userManager)
         {
             _context = context;
             _userManager = userManager;
         }
+        [Authorize(Roles = "Customer")]
+        public async Task<IActionResult> AddToCart(string isbn)
+        {
+            string thisUserId = _userManager.GetUserId(HttpContext.User);
+            Cart myCart = new Cart() { UId = thisUserId, BookIsbn = isbn, Quantity = 1 };
+            Cart fromDb = _context.Carts.FirstOrDefault(c => c.UId == thisUserId && c.BookIsbn == isbn);
+            //if not existing (or null), add it to cart. If already added to Cart before, ignore it.
+
+            if (fromDb != null)
+            {
+                fromDb.Quantity++;
+                _context.Update(fromDb);               
+                await _context.SaveChangesAsync();
+            }
+            else
+            {
+                _context.Add(myCart);
+                await _context.SaveChangesAsync();
+            }
+            return RedirectToAction("List");
+        }
+        [Authorize(Roles = "Customer")]
+        public async Task<IActionResult> Checkout()
+        {
+            string thisUserId = _userManager.GetUserId(HttpContext.User);
+            List<Cart> myDetailsInCart = await _context.Carts
+                .Where(c => c.UId == thisUserId)
+                .Include(c => c.Book)
+                .ToListAsync();
+            using (var transaction = _context.Database.BeginTransaction())
+            {
+                try
+                {
+                    //Step 1: create an order
+                    Order myOrder = new Order();
+                    myOrder.UId = thisUserId;
+                    myOrder.OrderDate = DateTime.Now;
+                    myOrder.Total = myDetailsInCart.Select(c => c.Book.Price * c.Quantity)
+                        .Aggregate((c1, c2) => c1 + c2);
+                    _context.Add(myOrder);
+                    await _context.SaveChangesAsync();
+
+                    //Step 2: insert all order details by var "myDetailsInCart"
+                    foreach (var item in myDetailsInCart)
+                    {
+                        OrderDetail detail = new OrderDetail()
+                        {
+                            OrderId = myOrder.Id,
+                            BookIsbn = item.BookIsbn,
+                            Quantity = 1
+                        };
+                        _context.Add(detail);
+                    }
+                    await _context.SaveChangesAsync();
+
+                    //Step 3: empty/delete the cart we just done for thisUser
+                    _context.Carts.RemoveRange(myDetailsInCart);
+                    await _context.SaveChangesAsync();
+                    transaction.Commit();
+                }
+                catch (DbUpdateException ex)
+                {
+                    transaction.Rollback();
+                    Console.WriteLine("Error occurred in Checkout" + ex);
+                }
+            }
+            return RedirectToAction("Index", "Cart");
+        }
+
 
         // GET: Books
-        public async Task<IActionResult> Index()
+        public async Task<IActionResult> Index(int id = 0, string searchString="")
         {
             AppUser thisUser = await _userManager.GetUserAsync(HttpContext.User);
             Store thisStore = await _context.Stores.FirstOrDefaultAsync(s => s.UId == thisUser.Id);
-            var books = _context.Books
-                .Where(b => b.StoreId == thisStore.Id)
-                .Include(b => b.Store);
-            return View(await books.ToListAsync());
+            //var books = _context.Books
+            //    .Where(b => b.StoreId == thisStore.Id)
+            //    .Include(b => b.Store);
+            var books = from b in _context.Books.Where(b => b.StoreId == thisStore.Id)
+                .Include(b => b.Store)
+            select b;
+            if (!String.IsNullOrEmpty(searchString))
+            {
+                books = books.Where(b => b.Title.Contains(searchString)
+                                       || b.Category.Contains(searchString));
+            }
+
+            int numberOfRecords = await books.CountAsync();     //Count SQL
+            int numberOfPages = (int)Math.Ceiling((double)numberOfRecords / _recordsPerPage);
+            ViewBag.numberOfPages = numberOfPages;
+            ViewBag.currentPage = id;
+            ViewData["CurrentFilter"] = searchString;
+            List<Book> bookList = await books
+                .ToListAsync();
+            return View(bookList);
+            
+        }
+
+        public async Task<IActionResult> List(int id = 0, string searchString = "")
+        {
+            var books = from b in _context.Books
+                        select b;
+            if (!String.IsNullOrEmpty(searchString))
+            {
+                books = books.Where(b => b.Title.Contains(searchString)
+                                       || b.Category.Contains(searchString));
+            }
+
+            int numberOfRecords = await books.CountAsync();     //Count SQL
+            int numberOfPages = (int)Math.Ceiling((double)numberOfRecords / _recordsPerPage);
+            ViewBag.numberOfPages = numberOfPages;
+            ViewBag.currentPage = id;
+            ViewData["CurrentFilter"] = searchString;
+            List<Book> bookList = await books
+                .ToListAsync();
+            return View(bookList);
+
         }
 
         // GET: Books/Details/5
@@ -65,10 +173,10 @@ namespace ASM.Controllers
         // POST: Books/Create
         // To protect from overposting attacks, enable the specific properties you want to bind to.
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
-        [Authorize(Roles = "Seller")]
+        [Authorize(Roles = "Seller")] 
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("Isbn,Title,Pages,Author,Category,Price,Decs,Imgurl,StoreId")] Book book, IFormFile image)
+        public async Task<IActionResult> Create([Bind("Isbn,Title,Pages,Author,Category,Price,Decs,Imgurl")] Book book, IFormFile image)
         {
             if (image != null)
             {
@@ -110,7 +218,7 @@ namespace ASM.Controllers
             {
                 return NotFound();
             }
-            ViewData["StoreId"] = new SelectList(_context.Stores, "Id", "Id", book.StoreId);
+            
             return View(book);
         }
 

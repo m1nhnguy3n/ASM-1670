@@ -95,7 +95,7 @@ namespace ASM.Migrations
                     b.ToTable("AspNetUsers", (string)null);
                 });
 
-            modelBuilder.Entity("Demo6.Models.Book", b =>
+            modelBuilder.Entity("ASM.Models.Book", b =>
                 {
                     b.Property<string>("Isbn")
                         .HasColumnType("nvarchar(450)");
@@ -135,7 +135,7 @@ namespace ASM.Migrations
                     b.ToTable("Books");
                 });
 
-            modelBuilder.Entity("Demo6.Models.Cart", b =>
+            modelBuilder.Entity("ASM.Models.Cart", b =>
                 {
                     b.Property<string>("UId")
                         .HasColumnType("nvarchar(450)");
@@ -150,7 +150,7 @@ namespace ASM.Migrations
                     b.ToTable("Carts");
                 });
 
-            modelBuilder.Entity("Demo6.Models.Order", b =>
+            modelBuilder.Entity("ASM.Models.Order", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
@@ -175,7 +175,7 @@ namespace ASM.Migrations
                     b.ToTable("Orders");
                 });
 
-            modelBuilder.Entity("Demo6.Models.OrderDetail", b =>
+            modelBuilder.Entity("ASM.Models.OrderDetail", b =>
                 {
                     b.Property<int>("OrderId")
                         .HasColumnType("int");
@@ -193,7 +193,7 @@ namespace ASM.Migrations
                     b.ToTable("OrderDetails");
                 });
 
-            modelBuilder.Entity("Demo6.Models.Store", b =>
+            modelBuilder.Entity("ASM.Models.Store", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
@@ -362,9 +362,9 @@ namespace ASM.Migrations
                     b.ToTable("AspNetUserTokens", (string)null);
                 });
 
-            modelBuilder.Entity("Demo6.Models.Book", b =>
+            modelBuilder.Entity("ASM.Models.Book", b =>
                 {
-                    b.HasOne("Demo6.Models.Store", "Store")
+                    b.HasOne("ASM.Models.Store", "Store")
                         .WithMany("Books")
                         .HasForeignKey("StoreId")
                         .OnDelete(DeleteBehavior.Cascade)
@@ -373,9 +373,9 @@ namespace ASM.Migrations
                     b.Navigation("Store");
                 });
 
-            modelBuilder.Entity("Demo6.Models.Cart", b =>
+            modelBuilder.Entity("ASM.Models.Cart", b =>
                 {
-                    b.HasOne("Demo6.Models.Book", "Book")
+                    b.HasOne("ASM.Models.Book", "Book")
                         .WithMany("Carts")
                         .HasForeignKey("BookIsbn")
                         .OnDelete(DeleteBehavior.NoAction)
@@ -392,7 +392,7 @@ namespace ASM.Migrations
                     b.Navigation("User");
                 });
 
-            modelBuilder.Entity("Demo6.Models.Order", b =>
+            modelBuilder.Entity("ASM.Models.Order", b =>
                 {
                     b.HasOne("ASM.Areas.Identity.Data.AppUser", "User")
                         .WithMany("Orders")
@@ -403,15 +403,15 @@ namespace ASM.Migrations
                     b.Navigation("User");
                 });
 
-            modelBuilder.Entity("Demo6.Models.OrderDetail", b =>
+            modelBuilder.Entity("ASM.Models.OrderDetail", b =>
                 {
-                    b.HasOne("Demo6.Models.Book", "Book")
+                    b.HasOne("ASM.Models.Book", "Book")
                         .WithMany("OrderDetails")
                         .HasForeignKey("BookIsbn")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.HasOne("Demo6.Models.Order", "Order")
+                    b.HasOne("ASM.Models.Order", "Order")
                         .WithMany("OrderDetails")
                         .HasForeignKey("OrderId")
                         .OnDelete(DeleteBehavior.Cascade)
@@ -422,11 +422,11 @@ namespace ASM.Migrations
                     b.Navigation("Order");
                 });
 
-            modelBuilder.Entity("Demo6.Models.Store", b =>
+            modelBuilder.Entity("ASM.Models.Store", b =>
                 {
                     b.HasOne("ASM.Areas.Identity.Data.AppUser", "User")
                         .WithOne("Store")
-                        .HasForeignKey("Demo6.Models.Store", "UId")
+                        .HasForeignKey("ASM.Models.Store", "UId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
@@ -493,19 +493,19 @@ namespace ASM.Migrations
                     b.Navigation("Store");
                 });
 
-            modelBuilder.Entity("Demo6.Models.Book", b =>
+            modelBuilder.Entity("ASM.Models.Book", b =>
                 {
                     b.Navigation("Carts");
 
                     b.Navigation("OrderDetails");
                 });
 
-            modelBuilder.Entity("Demo6.Models.Order", b =>
+            modelBuilder.Entity("ASM.Models.Order", b =>
                 {
                     b.Navigation("OrderDetails");
                 });
 
-            modelBuilder.Entity("Demo6.Models.Store", b =>
+            modelBuilder.Entity("ASM.Models.Store", b =>
                 {
                     b.Navigation("Books");
                 });

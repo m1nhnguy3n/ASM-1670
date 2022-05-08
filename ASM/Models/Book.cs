@@ -1,7 +1,7 @@
 ﻿using ASM.Areas.Identity.Data;
 using System.ComponentModel.DataAnnotations;
 
-namespace Demo6.Models
+namespace ASM.Models
 {
     public class Book
     {

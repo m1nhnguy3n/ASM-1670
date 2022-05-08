@@ -2,7 +2,7 @@
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 
-namespace Demo6.Models
+namespace ASM.Models
 {
     public class Store
     {

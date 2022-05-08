@@ -1,5 +1,5 @@
 ﻿using ASM.Areas.Identity.Data;
-using Demo6.Models;
+using ASM.Models;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;

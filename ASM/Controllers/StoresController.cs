@@ -7,7 +7,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using ASM.Data;
-using Demo6.Models;
+using ASM.Models;
 using Microsoft.AspNetCore.Identity;
 using ASM.Areas.Identity.Data;
 

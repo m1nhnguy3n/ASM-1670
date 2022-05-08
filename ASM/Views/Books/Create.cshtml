@@ -1,4 +1,4 @@
-﻿@model Demo6.Models.Book
+﻿@model ASM.Models.Book
 
 @{
     ViewData["Title"] = "Create";
@@ -50,10 +50,6 @@
             <div class="form-group">
                 <label class="control-label">Image</label>
                 <input class="form-control" type="file" name="img" />
-            </div>
-            <div class="form-group">
-                <label asp-for="StoreId" class="control-label"></label>
-                <select asp-for="StoreId" class ="form-control" asp-items="ViewBag.StoreId"></select>
             </div>
             <div class="form-group">
                 <input type="submit" value="Create" class="btn btn-primary" />

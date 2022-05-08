@@ -1,4 +1,4 @@
-﻿namespace Demo6.Models
+﻿namespace ASM.Models
 {
     public class OrderDetail
     {
