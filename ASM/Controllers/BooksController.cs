@@ -59,12 +59,18 @@ namespace ASM.Controllers
             {
                 try
                 {
+                    double totalResult=0;
                     //Step 1: create an order
                     Order myOrder = new Order();
                     myOrder.UId = thisUserId;
                     myOrder.OrderDate = DateTime.Now;
-                    myOrder.Total = myDetailsInCart.Select(c => c.Book.Price * c.Quantity)
-                        .Aggregate((c1, c2) => c1 + c2);
+                    foreach (var item in myDetailsInCart)
+                    {
+                        totalResult = totalResult + (item.Book.Price * item.Quantity);
+                    }
+                    myOrder.Total = totalResult;
+                    //myOrder.Total = myDetailsInCart.Select(c => c.Book.Price * c.Quantity)
+                    //.Aggregate((c1, c2) => c1 + c2);
                     _context.Add(myOrder);
                     await _context.SaveChangesAsync();
 
@@ -75,7 +81,7 @@ namespace ASM.Controllers
                         {
                             OrderId = myOrder.Id,
                             BookIsbn = item.BookIsbn,
-                            Quantity = 1
+                            Quantity = item.Quantity
                         };
                         _context.Add(detail);
                     }

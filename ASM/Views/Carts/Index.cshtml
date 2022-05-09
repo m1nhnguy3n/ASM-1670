@@ -1,10 +1,11 @@
 ﻿@model IEnumerable<ASM.Models.Cart>
 
+
 @{
 	ViewData["Title"] = "Index";
 }
 
-<h1>Index</h1>
+
 @if(Model.Count()>0){
 	double total = 0;
 	<table class="table table-bordered">
@@ -48,16 +49,17 @@
 					@Html.DisplayFor(modelItem => item.BookIsbn)
 				</td>
 				<td>
+					<a asp-controller="Carts" asp-action="Sub" asp-route-isbn="@item.BookIsbn" class="btn btn-primary">-</a>
 					@Html.DisplayFor(modelItem => item.Quantity)
+					<a asp-controller="Carts" asp-action="Plus" asp-route-isbn="@item.BookIsbn" class="btn btn-primary">+</a>
 				</td>
 				<td>
 					@Html.DisplayFor(modelItem => item.Book.Price)
 				</td>
 				<td>
-					@(bookPrice)
+					@(Math.Round(bookPrice,2))
 				</td>
 			</tr>
-			
 		}
 		<tr>
 				<td></td>
@@ -65,12 +67,18 @@
 				<td></td>
 				<td></td>
 				<td></td>
-				<td>Total: @(total)</td>
+				<td>Total: @(Math.Round(total,2))</td>
 			</tr>
 	</tbody>
 </table>
 
-<a asp-controller="Books" asp-action="Checkout" class="btn btn-success">Checkout</a>
+	<a asp-controller="Books" asp-action="Checkout" class="btn btn-success">Checkout</a>
+
+}
+else
+{
+	<h1>Empty cart!</h1>
+	<a asp-controller="Books" asp-action="List" class="btn btn-success">Shop now</a>
 
 }
 

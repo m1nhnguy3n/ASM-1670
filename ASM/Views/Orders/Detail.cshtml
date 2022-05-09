@@ -1,0 +1,64 @@
+﻿@model IEnumerable<ASM.Models.OrderDetail>
+
+@{
+    ViewData["Title"] = "Detail";
+}
+
+<h1>Order Detail</h1>
+
+
+<table class="table table-bordered">
+    <thead>
+        <tr>
+            <th>
+				@Html.DisplayNameFor(model => model.BookIsbn)
+			</th>
+			<th>
+				@Html.DisplayNameFor(model => model.Book.Imgurl)
+			</th>
+			<th>
+				@Html.DisplayNameFor(model => model.Quantity)
+			</th>
+			<th>
+				@Html.DisplayNameFor(model => model.Book.Price)
+			</th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var item in Model)
+		{
+				
+				
+				<tr>
+				<td>
+					@Html.DisplayFor(modelItem => item.BookIsbn)
+				</td>
+				<td>
+					<img src="@Html.DisplayFor(modelItem => item.Book.Imgurl)" />
+					
+				</td>
+				<td>
+					@Html.DisplayFor(modelItem => item.Quantity)
+				</td>
+				<td>
+					@Html.DisplayFor(modelItem => item.Book.Price)
+				</td>
+				
+			</tr>
+		}
+    </tbody>
+</table>
+<div style="display:flex;text-align:center;justify-content:center">
+    <nav aria-label="Page navigation example">
+        <ul class="pagination">
+            @for (var i = 0; i < @ViewBag.numberOfPages; i++)
+            {
+                var style = (ViewBag.currentPage == @i) ? "active" : "";
+                <li class="page-item @style">
+                    <a class="page-link" asp-route-id="@i"
+                   asp-route-searchString="@ViewData["CurrentFilter"]">@(i+1)</a>
+                </li>
+            }
+        </ul>
+    </nav>
+</div>
