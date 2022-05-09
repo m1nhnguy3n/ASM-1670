@@ -11,6 +11,12 @@
     <hr />
     <dl class="row">
         <dt class = "col-sm-2">
+            @Html.DisplayNameFor(model => model.Imgurl)
+        </dt>
+        <dd class = "col-sm-10">
+           <img src="@Html.DisplayFor(model => model.Imgurl)"/>
+        </dd>
+        <dt class = "col-sm-2">
             @Html.DisplayNameFor(model => model.Title)
         </dt>
         <dd class = "col-sm-10">
@@ -46,21 +52,24 @@
         <dd class = "col-sm-10">
             @Html.DisplayFor(model => model.Decs)
         </dd>
-        <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.Imgurl)
-        </dt>
-        <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.Imgurl)
-        </dd>
+        
         <dt class = "col-sm-2">
             @Html.DisplayNameFor(model => model.Store)
         </dt>
         <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.Store.Id)
+            @Html.DisplayFor(model => model.Store.Name)
         </dd>
     </dl>
 </div>
 <div>
-    <a asp-action="Edit" asp-route-id="@Model?.Isbn">Edit</a> |
-    <a asp-action="Index">Back to List</a>
+    @if (@User.IsInRole("Seller"))
+    {
+        <a class="btn btn-primary"asp-action="Edit" asp-route-id="@Model?.Isbn">Edit</a>
+    }
+    @if (@User.IsInRole("Customer"))
+    {
+        <a class="btn btn-primary" asp-action="AddToCart" asp-route-id="@Model?.Isbn">Add To Carts</a>
+    }
+
+    <a class="btn btn-success" asp-action="Index">Back to List</a>
 </div>

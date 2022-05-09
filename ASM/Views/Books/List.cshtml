@@ -10,7 +10,7 @@
         <p>
             Find by name: <input type="text" name="SearchString" value="@ViewData["CurrentFilter"]" />
             <input type="submit" value="Search" class="btn btn-primary" /> |
-            <a asp-action="List" >Back to Full List</a>
+            <a asp-action="List" class="btn btn-success" >Back to Full List</a>
         </p>
     </div>
 </form>
@@ -23,10 +23,20 @@
                       <img src="@Model[i].Imgurl" class="card-img-top" alt="...">
                       <div class="card-body">
                           <h5 class="card-title">@Model[i].Title</h5>
-
-                          <p class="card-text">@Model[i].Category</p>
-                          <p class="card-text">@Model[i].Price</p>
-                          <a href="#" class="btn btn-primary">Detail</a>
+                          <div>
+                              <a>Author: </a>
+                              <b> @Model[i].Author</b>
+                          </div>
+                          <div>
+                              <a>Category: </a>
+                              <b class="card-text">@Model[i].Category</b>
+                          </div>
+                          <div>
+                              <a>Price: $</a>
+                              <b class="card-text">@Model[i].Price</b>
+                          </div>
+                          
+                          <a class="btn btn-primary" asp-action="Details" asp-route-id="@Model[i].Isbn">Detail</a>
                           <a asp-action="AddToCart" asp-route-isbn="@Model[i].Isbn" class="btn btn-primary">Add to cart</a>
                       </div>
                   </div>
