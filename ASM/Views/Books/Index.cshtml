@@ -5,19 +5,22 @@
 }
 
 <h1>Index</h1>
-<form asp-action="Index" method="get">
+<form asp-action="Index" method="get" class="form-inline">
     <div class="form-actions no-color">
         <p>
-            Find by name: <input type="text" name="SearchString" value="@ViewData["CurrentFilter"]" />
-            <input type="submit" value="Search" class="btn btn-default" /> |
-            <a asp-action="Index">Back to Full List</a>
+            find by name: <input type="text" placeholder="Search" aria-label="Search" name="searchstring" value="@ViewData["CurrentFilter"]" />
+
+            <input type="submit" value="search" class="btn btn-primary" /> |
+            <a asp-action="index" class="btn btn-primary">back to full list</a>
         </p>
     </div>
+    
+
 </form>
 <p>
-    <a asp-action="Create">Create New</a>
+    <a class="btn btn-success" asp-action="Create">Create New</a>
 </p>
-<table class="table">
+<table class="table table-bordered">
     <thead>
         <tr>
             <th>
@@ -48,52 +51,53 @@
         </tr>
     </thead>
     <tbody>
-@foreach (var item in Model) {
-        <tr>
-            <td>
-                @Html.DisplayFor(modelItem => item.Title)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.Pages)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.Author)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.Category)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.Price)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.Decs)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.Imgurl)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.Store.Id)
-            </td>
-            <td>
-                <a asp-action="Edit" asp-route-id="@item.Isbn">Edit</a> |
-                <a asp-action="Details" asp-route-id="@item.Isbn">Details</a> |
-                <a asp-action="Delete" asp-route-id="@item.Isbn">Delete</a>
-            </td>
-        </tr>
-}
+        @foreach (var item in Model)
+        {
+            <tr>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Title)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Pages)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Author)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Category)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Price)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Decs)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Imgurl)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Store.Id)
+                </td>
+                <td>
+                    <a asp-action="Edit" asp-route-id="@item.Isbn" class="btn btn-primary">Edit</a>
+                    <a asp-action="Details" asp-route-id="@item.Isbn" class="btn btn-primary">Details</a>
+                    <a asp-action="Delete" asp-route-id="@item.Isbn" class="btn btn-danger">Delete</a>
+                </td>
+            </tr>
+        }
     </tbody>
 </table>
 <div style="display:flex;text-align:center;justify-content:center">
-      <nav aria-label="Page navigation example">
-          <ul class="pagination">
-              @for (var i = 0; i < @ViewBag.numberOfPages; i++)
-              {
-                  var style = (ViewBag.currentPage == @i) ? "active" : "";
-                  <li class="page-item @style">
-                      <a class="page-link" asp-route-id="@i"
-                      asp-route-searchString="@ViewData["CurrentFilter"]">@(i+1)</a>
-                  </li>
-              }
-          </ul>
-      </nav>
-  </div>
+    <nav aria-label="Page navigation example">
+        <ul class="pagination">
+            @for (var i = 0; i < @ViewBag.numberOfPages; i++)
+            {
+                var style = (ViewBag.currentPage == @i) ? "active" : "";
+                <li class="page-item @style">
+                    <a class="page-link" asp-route-id="@i"
+                   asp-route-searchString="@ViewData["CurrentFilter"]">@(i+1)</a>
+                </li>
+            }
+        </ul>
+    </nav>
+</div>
