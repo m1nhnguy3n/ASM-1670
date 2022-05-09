@@ -1,5 +1,6 @@
 ﻿using ASM.Areas.Identity.Data;
 using ASM.Data;
+using ASM.Models;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
@@ -26,6 +27,56 @@ namespace ASM.Controllers
         }
 
         
+        public async Task<IActionResult> Plus(string isbn)
+        {
+            string thisUserId = _userManager.GetUserId(HttpContext.User);
+            Cart myCart = new Cart() { UId = thisUserId, BookIsbn = isbn, Quantity = 1 };
+            Cart fromDb = _context.Carts.FirstOrDefault(c => c.UId == thisUserId && c.BookIsbn == isbn);
+            //if not existing (or null), add it to cart. If already added to Cart before, ignore it.
+
+            if (fromDb != null)
+            {
+                fromDb.Quantity++;
+                _context.Update(fromDb);
+                await _context.SaveChangesAsync();
+            }
+            else
+            {
+                _context.Add(myCart);
+                await _context.SaveChangesAsync();
+            }
+
+            return RedirectToAction("Index", "Carts");
+        }
+
+        public async Task<IActionResult> Sub(string isbn)
+        {
+            
+            string thisUserId = _userManager.GetUserId(HttpContext.User);
+            Cart myCart = new Cart() { UId = thisUserId, BookIsbn = isbn, Quantity = 1 };
+            Cart fromDb = _context.Carts.FirstOrDefault(c => c.UId == thisUserId && c.BookIsbn == isbn);
+            //if not existing (or null), add it to cart. If already added to Cart before, ignore it.
+
+            if (fromDb.Quantity > 1)
+            {
+
+                if (fromDb != null)
+                {
+                    fromDb.Quantity--;
+                    _context.Update(fromDb);
+                    await _context.SaveChangesAsync();
+                }
+                else
+                {
+                    _context.Add(myCart);
+                    await _context.SaveChangesAsync();
+                }
+            }
+            
+
+            return RedirectToAction("Index", "Carts");
+        }
+
 
     }
 

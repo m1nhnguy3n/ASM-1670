@@ -2,6 +2,7 @@
 using ASM.Data;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 
 namespace ASM.Controllers
 {
@@ -27,7 +28,12 @@ namespace ASM.Controllers
             return View(_context.Orders.Where(c => c.UId == thisUserId));
         }
 
-       
+        public async Task<IActionResult> Detail(int id)
+        {
+            return View(_context.OrderDetails.Where(a => a.OrderId == id).Include(a => a.Book));
+        }
+
+
 
     }
 }
