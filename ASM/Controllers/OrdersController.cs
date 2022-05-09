@@ -21,6 +21,14 @@ namespace ASM.Controllers
             string thisUserId = _userManager.GetUserId(HttpContext.User);
             return View(_context.Orders.Where(c => c.UId == thisUserId));
         }
+        public IActionResult OrderHistory()
+        {
+            string thisUserId = _userManager.GetUserId(HttpContext.User);
+            return View(_context.Orders.Where(c => c.UId == thisUserId));
+        }
+
+       
+
     }
 }
 

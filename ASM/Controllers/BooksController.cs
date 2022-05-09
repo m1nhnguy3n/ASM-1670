@@ -46,6 +46,7 @@ namespace ASM.Controllers
             }
             return RedirectToAction("List");
         }
+
         [Authorize(Roles = "Customer")]
         public async Task<IActionResult> Checkout()
         {
@@ -91,8 +92,10 @@ namespace ASM.Controllers
                     Console.WriteLine("Error occurred in Checkout" + ex);
                 }
             }
-            return RedirectToAction("Index", "Cart");
+            return View("~/Views/Carts/OrderSucessfull.cshtml");
         }
+
+
 
 
         // GET: Books

@@ -26,6 +26,9 @@
             <th>
                 @Html.DisplayNameFor(model => model.Title)
             </th>
+             <th>
+                @Html.DisplayNameFor(model => model.Imgurl)
+            </th>
             <th>
                 @Html.DisplayNameFor(model => model.Pages)
             </th>
@@ -41,9 +44,7 @@
             <th>
                 @Html.DisplayNameFor(model => model.Decs)
             </th>
-            <th>
-                @Html.DisplayNameFor(model => model.Imgurl)
-            </th>
+           
             <th>
                 @Html.DisplayNameFor(model => model.Store)
             </th>
@@ -57,6 +58,10 @@
                 <td>
                     @Html.DisplayFor(modelItem => item.Title)
                 </td>
+                <td>
+                    <img src="@Html.DisplayFor(modelItem => item.Imgurl) "/>
+                </td>
+
                 <td>
                     @Html.DisplayFor(modelItem => item.Pages)
                 </td>
@@ -72,9 +77,7 @@
                 <td>
                     @Html.DisplayFor(modelItem => item.Decs)
                 </td>
-                <td>
-                    @Html.DisplayFor(modelItem => item.Imgurl)
-                </td>
+                
                 <td>
                     @Html.DisplayFor(modelItem => item.Store.Id)
                 </td>
