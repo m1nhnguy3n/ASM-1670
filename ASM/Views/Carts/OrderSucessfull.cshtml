@@ -1,0 +1,22 @@
+﻿@model IEnumerable<ASM.Models.Order>
+
+@{
+	ViewData["Title"] = "Index";
+	Layout = "_Layout";
+}
+
+<html>
+	    <div class="card mb-3">
+      <img style="width: 30%; margin: auto;" class="card-img-top" src="https://www.legalraasta.com/wp-content/uploads/2017/06/legalraasta.gif" alt="Card image cap">
+      <div class="card-body">
+        <h5 style="text-align: center;" class="card-title">Card title</h5>
+        <p style="text-align: center;" class="card-text">We will deliver the goods as soon as possible, you can double check your email address.</p>
+        
+      </div>
+    </div>
+		<a asp-controller="Orders" asp-action="OrderHistory" class="btn btn-success">View Your Order History</a>
+   
+    
+
+</html>
+

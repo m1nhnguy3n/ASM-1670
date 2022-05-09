@@ -11,7 +11,10 @@
 	<thead>
 		<tr>
 			<th>
-				@Html.DisplayNameFor(model => model.UId)
+				@Html.DisplayNameFor(model => model.Book.Title)
+			</th>
+			<th>
+				@Html.DisplayNameFor(model => model.Book.Imgurl)
 			</th>
 			<th>
 				@Html.DisplayNameFor(model => model.BookIsbn)
@@ -25,7 +28,7 @@
 			<th>
 				Total
 			</th>
-			<th></th>
+			
 		</tr>
 	</thead>
 	<tbody>
@@ -35,7 +38,11 @@
 				total = total + bookPrice;
 				<tr>
 				<td>
-					@Html.DisplayFor(modelItem => item.UId)
+					@Html.DisplayFor(modelItem => item.Book.Title)
+				</td>
+				<td>
+					<img src="@Html.DisplayFor(modelItem => item.Book.Imgurl)" />
+					
 				</td>
 				<td>
 					@Html.DisplayFor(modelItem => item.BookIsbn)
@@ -50,14 +57,16 @@
 					@(bookPrice)
 				</td>
 			</tr>
-			<tr>
+			
+		}
+		<tr>
+				<td></td>
 				<td></td>
 				<td></td>
 				<td></td>
 				<td></td>
 				<td>Total: @(total)</td>
 			</tr>
-		}
 	</tbody>
 </table>
 
