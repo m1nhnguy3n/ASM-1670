@@ -201,6 +201,7 @@ namespace ASM.Controllers
                 {
                     image.CopyTo(stream);
                 }
+                book.Imgurl = "img/" + ImageName;
                 AppUser thisUser = await _userManager.GetUserAsync(HttpContext.User);
                 Store thisStore = await _context.Stores.FirstOrDefaultAsync(s => s.UId == thisUser.Id);
                 book.StoreId = thisStore.Id;
