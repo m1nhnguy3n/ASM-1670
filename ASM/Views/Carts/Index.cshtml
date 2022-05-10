@@ -59,6 +59,9 @@
 				<td>
 					@(Math.Round(bookPrice,2))
 				</td>
+				<td>
+					<a asp-controller="Carts" asp-action="Delete" asp-route-id="@item.BookIsbn" class="btn btn-danger">Delete</a>
+				</td>
 			</tr>
 		}
 		<tr>

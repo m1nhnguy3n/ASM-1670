@@ -76,6 +76,16 @@ namespace ASM.Controllers
 
             return RedirectToAction("Index", "Carts");
         }
+        public async Task<IActionResult> Delete(string id)
+        {
+            string thisUserId = _userManager.GetUserId(HttpContext.User);
+            Cart fromDb = _context.Carts.FirstOrDefault(c => c.UId == thisUserId && c.BookIsbn == id);
+
+            _context.Carts.Remove(fromDb);
+            await _context.SaveChangesAsync();
+
+            return RedirectToAction("Index", "Carts");
+        }
 
 
     }
