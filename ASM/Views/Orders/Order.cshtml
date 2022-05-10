@@ -1,0 +1,66 @@
+﻿@model IEnumerable<ASM.Models.Order>
+@{
+    ViewData["Title"] = "Order";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+
+<h1>Order History</h1>
+
+
+<table class="table table-bordered">
+    <thead>
+        <tr>
+            <th>
+                @Html.DisplayNameFor(model => model.Id)
+            </th>
+             <th>
+                @Html.DisplayNameFor(model => model.OrderDate)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Total)
+            </th>
+            <th>
+
+            </th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var item in Model)
+        {
+            <tr>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Id)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.OrderDate)
+                </td>
+
+                <td>
+                    @Html.DisplayFor(modelItem => item.Total)
+                </td>
+
+                @*<th>
+                    <a asp-controller="Orders" asp-action="Detail" asp-route-id="@item.BookIsbn" class="btn btn-primary">Detail</a>
+                    <a value="Delete" asp-controller="Orders" asp-action="Delete" asp-route-id="@item.BookIsbn" class="btn btn-danger">Delete</a>
+                </th>*@
+
+               
+            </tr>
+        }
+    </tbody>
+</table>
+<div style="display:flex;text-align:center;justify-content:center">
+    <nav aria-label="Page navigation example">
+        <ul class="pagination">
+            @for (var i = 0; i < @ViewBag.numberOfPages; i++)
+            {
+                var style = (ViewBag.currentPage == @i) ? "active" : "";
+                <li class="page-item @style">
+                    <a class="page-link" asp-route-id="@i"
+                   asp-route-searchString="@ViewData["CurrentFilter"]">@(i+1)</a>
+                </li>
+            }
+        </ul>
+    </nav>
+</div>

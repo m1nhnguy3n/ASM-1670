@@ -33,6 +33,14 @@ namespace ASM.Controllers
         {
             return View(_context.OrderDetails.Where(a => a.OrderId == id).Include(a => a.Book));
         }
+        public async Task<IActionResult> Order()
+        {
+            string thisUserId = _userManager.GetUserId(HttpContext.User);
+            Store thisStore = await _context.Stores.FirstOrDefaultAsync(s => s.UId == thisUserId);
+            OrderDetail orderDetail = _context.OrderDetails.FirstOrDefault(b => b.Book.StoreId == thisStore.Id);
+            var order = _context.Orders.Where(od=>od.Id == orderDetail.OrderId).Include(o => o.User);
+            return View(order.ToList());
+        }
         
        
 
