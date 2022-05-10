@@ -1,16 +1,13 @@
 ﻿#nullable disable
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
+using ASM.Areas.Identity.Data;
+using ASM.Data;
+using ASM.Models;
+using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Identity;
+using Microsoft.AspNetCore.Identity.UI.Services;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
-using ASM.Data;
-using ASM.Models;
-using Microsoft.AspNetCore.Identity;
-using ASM.Areas.Identity.Data;
-using Microsoft.AspNetCore.Authorization;
 
 namespace ASM.Controllers
 {
@@ -19,11 +16,13 @@ namespace ASM.Controllers
         private readonly UserContext _context;
         private readonly UserManager<AppUser> _userManager;
         private readonly int _recordsPerPage = 20;
+        private readonly IEmailSender _emailSender;
 
-        public BooksController(UserContext context, UserManager<AppUser> userManager)
+        public BooksController(UserContext context, UserManager<AppUser> userManager, IEmailSender emailSender)
         {
             _context = context;
             _userManager = userManager;
+            _emailSender = emailSender;
         }
         [Authorize(Roles = "Customer")]
         public async Task<IActionResult> AddToCart(string isbn)
@@ -36,7 +35,7 @@ namespace ASM.Controllers
             if (fromDb != null)
             {
                 fromDb.Quantity++;
-                _context.Update(fromDb);               
+                _context.Update(fromDb);
                 await _context.SaveChangesAsync();
             }
             else
@@ -51,6 +50,9 @@ namespace ASM.Controllers
         public async Task<IActionResult> Checkout()
         {
             string thisUserId = _userManager.GetUserId(HttpContext.User);
+            AppUser thisUser = await _userManager.GetUserAsync(HttpContext.User);
+            string email = thisUser.Email;
+            
             List<Cart> myDetailsInCart = await _context.Carts
                 .Where(c => c.UId == thisUserId)
                 .Include(c => c.Book)
@@ -59,7 +61,7 @@ namespace ASM.Controllers
             {
                 try
                 {
-                    double totalResult=0;
+                    double totalResult = 0;
                     //Step 1: create an order
                     Order myOrder = new Order();
                     myOrder.UId = thisUserId;
@@ -98,6 +100,7 @@ namespace ASM.Controllers
                     Console.WriteLine("Error occurred in Checkout" + ex);
                 }
             }
+            await _emailSender.SendEmailAsync(thisUser.Email, "Order Succesfully", "You have successfully placed your order at ");
             return View("~/Views/Carts/OrderSucessfull.cshtml");
         }
 
@@ -105,7 +108,7 @@ namespace ASM.Controllers
 
 
         // GET: Books
-        public async Task<IActionResult> Index(int id = 0, string searchString="")
+        public async Task<IActionResult> Index(int id = 0, string searchString = "")
         {
             AppUser thisUser = await _userManager.GetUserAsync(HttpContext.User);
             Store thisStore = await _context.Stores.FirstOrDefaultAsync(s => s.UId == thisUser.Id);
@@ -114,7 +117,7 @@ namespace ASM.Controllers
             //    .Include(b => b.Store);
             var books = from b in _context.Books.Where(b => b.StoreId == thisStore.Id)
                 .Include(b => b.Store)
-            select b;
+                        select b;
             if (!String.IsNullOrEmpty(searchString))
             {
                 books = books.Where(b => b.Title.Contains(searchString)
@@ -129,7 +132,7 @@ namespace ASM.Controllers
             List<Book> bookList = await books
                 .ToListAsync();
             return View(bookList);
-            
+
         }
 
         public async Task<IActionResult> List(int id = 0, string searchString = "")
@@ -171,19 +174,19 @@ namespace ASM.Controllers
 
             return View(book);
         }
-        
+
 
         // GET: Books/Create
         public IActionResult Create()
         {
-            
+
             return View();
         }
 
         // POST: Books/Create
         // To protect from overposting attacks, enable the specific properties you want to bind to.
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
-        [Authorize(Roles = "Seller")] 
+        [Authorize(Roles = "Seller")]
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Create([Bind("Isbn,Title,Pages,Author,Category,Price,Decs,Imgurl")] Book book, IFormFile image)
@@ -229,7 +232,7 @@ namespace ASM.Controllers
             {
                 return NotFound();
             }
-            
+
             return View(book);
         }
 
