@@ -39,13 +39,13 @@ namespace ASM.Controllers
             Store thisStore = await _context.Stores.FirstOrDefaultAsync(s => s.UId == thisUserId);           
             OrderDetail orderDetail = _context.OrderDetails.FirstOrDefault(od => od.Book.StoreId == thisStore.Id);
 
-            List<Order> myDetailsInCart = await _context.Orders
-                .Where(od => od.Id == orderDetail.OrderId)
+            List<Order> customerOrder = await _context.Orders
+                //.Where(od => od.Id == orderDetail.OrderId)
                 .Include(c => c.User)
                 .ToListAsync();
 
             //var order = _context.Orders.Where(od=>od.Id == orderDetail.OrderId).Include(o=> o.User.Orders);
-            return View(myDetailsInCart.ToList());
+            return View(customerOrder);
         }
         
        

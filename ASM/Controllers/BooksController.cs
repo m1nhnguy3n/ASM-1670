@@ -15,7 +15,7 @@ namespace ASM.Controllers
     {
         private readonly UserContext _context;
         private readonly UserManager<AppUser> _userManager;
-        private readonly int _recordsPerPage = 20;
+        private readonly int _recordsPerPage = 10;
         private readonly IEmailSender _emailSender;
 
         public BooksController(UserContext context, UserManager<AppUser> userManager, IEmailSender emailSender)
@@ -100,7 +100,7 @@ namespace ASM.Controllers
                     Console.WriteLine("Error occurred in Checkout" + ex);
                 }
             }
-            await _emailSender.SendEmailAsync(thisUser.Email, "Order Succesfully", "You have successfully placed your order at ");
+            await _emailSender.SendEmailAsync(thisUser.Email, "Order Succesfully", "You have successfully placed your order ");
             return View("~/Views/Carts/OrderSucessfull.cshtml");
         }
 
@@ -130,7 +130,11 @@ namespace ASM.Controllers
             ViewBag.currentPage = id;
             ViewData["CurrentFilter"] = searchString;
             List<Book> bookList = await books
+                .Skip(id * numberOfPages)
+                .Take(_recordsPerPage)
                 .ToListAsync();
+
+
             return View(bookList);
 
         }
@@ -151,7 +155,10 @@ namespace ASM.Controllers
             ViewBag.currentPage = id;
             ViewData["CurrentFilter"] = searchString;
             List<Book> bookList = await books
+                .Skip(id * numberOfPages)
+                .Take(_recordsPerPage)
                 .ToListAsync();
+
             return View(bookList);
 
         }

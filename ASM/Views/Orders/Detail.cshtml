@@ -5,7 +5,7 @@
 }
 
 <h1>Order Detail</h1>
-
+@if(Model.Count()>0){
 
 <table class="table table-bordered">
     <thead>
@@ -27,25 +27,27 @@
     <tbody>
         @foreach (var item in Model)
 		{
-				
+			
 				
 				<tr>
 				<td>
 					@Html.DisplayFor(modelItem => item.BookIsbn)
 				</td>
 				<td>
-					<img src="@Html.DisplayFor(modelItem => item.Book.Imgurl)" />
-					
+					<img src="@Html.DisplayFor(modelItem => item.Book.Imgurl)" />					
 				</td>
 				<td>
 					@Html.DisplayFor(modelItem => item.Quantity)
 				</td>
 				<td>
-					@Html.DisplayFor(modelItem => item.Book.Price)
+					@Html.DisplayFor(modelItem => item.Book.Price)	
 				</td>
 				
 			</tr>
+			
 		}
+
+
     </tbody>
 </table>
 <div style="display:flex;text-align:center;justify-content:center">
@@ -62,3 +64,10 @@
         </ul>
     </nav>
 </div>
+}
+else
+{
+	<h1>Empty Order!</h1>
+	
+
+}
